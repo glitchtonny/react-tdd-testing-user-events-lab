@@ -1,5 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import '@testing-library/jest-dom';
+import userEvent from '@testing-library/user-event';
+
 
 import App from "../App";
 
@@ -66,26 +68,86 @@ test("displays the correct links", () => {
 
 // Newsletter Form - Initial State
 test("the form includes text inputs for name and email address", () => {
-  // your test code here
+
+
+  render(<App />)
+  const name = screen.getByLabelText(/name:/i)
+  const email = screen.getByLabelText(/email:/i)
+
+  expect(name).toBeInTheDocument()
+  expect(email).toBeInTheDocument()
 });
 
 test("the form includes three checkboxes to select areas of interest", () => {
   // your test code here
+
+  render(<App />)
+
+  const firstInterestBox = screen.getByRole("checkbox", { name: /interest one/i})
+  const secondInterestBox = screen.getByRole("checkbox", { name: /interest two/i})
+  const thirdInterestBox = screen.getByRole("checkbox", { name: /interest three/i})
+
+  expect(firstInterestBox).toBeInTheDocument()
+  expect(secondInterestBox).toBeInTheDocument()
+  expect(thirdInterestBox).toBeInTheDocument()
 });
 
 test("the checkboxes are initially unchecked", () => {
   // your test code here
+
+  render(<App />)
+  
+  const firstInterestBox = screen.getByRole("checkbox", { name: /interest one/i})
+  const secondInterestBox = screen.getByRole("checkbox", { name: /interest two/i})
+  const thirdInterestBox = screen.getByRole("checkbox", { name: /interest three/i})
+
+  expect(firstInterestBox).not.toBeChecked()
+  expect(secondInterestBox).not.toBeChecked()
+  expect(thirdInterestBox).not.toBeChecked()
 });
 
 // Newsletter Form - Adding Responses
 test("the page shows information the user types into the name and email address form fields", () => {
   // your test code here
+  
+  render(<App />)
+
+  const name = screen.getByLabelText(/name:/i)
+  const email = screen.getByLabelText(/email:/i)
+
+  userEvent.type(name, "John Doe")
+  userEvent.type(email, "randomemail@email.com")
+
+  expect(name).toHaveDisplayValue("John Doe")
+  expect(email).toHaveDisplayValue("randomemail@email.com")
 });
 
 test("checked status of checkboxes changes when user clicks them", () => {
   // your test code here
+
+
+  render(<App />)
+  const firstInterestBox = screen.getByRole("checkbox", { name: /interest one/i})
+  const secondInterestBox = screen.getByRole("checkbox", { name: /interest two/i})
+  const thirdInterestBox = screen.getByRole("checkbox", { name: /interest three/i})
+
+  userEvent.click(firstInterestBox)
+  userEvent.click(secondInterestBox)
+  userEvent.click(thirdInterestBox)
+
+
+  expect(firstInterestBox).toBeChecked()
+  expect(secondInterestBox).toBeChecked()
+  expect(thirdInterestBox).toBeChecked()
 });
 
 test("a message is displayed when the user clicks the Submit button", () => {
   // your test code here
+  render(<App />)
+
+  const button = screen.getByRole("button", { name: /submit/i})
+
+  userEvent.click(button)
+  const message = screen.getByText(/your form has been submitted!/i)
+  expect(message).toBeInTheDocument()
 });
